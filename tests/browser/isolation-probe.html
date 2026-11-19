@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Isolation probe</title>
+<style>body{font:14px ui-monospace,monospace;background:#0b1015;color:#d8e1e8;padding:18px}h1{font:600 16px system-ui;margin:0 0 10px}.ok{color:#6fbf8b}.no{color:#e0a64a}</style></head>
+<body><h1>Sandboxed preview: what can this page reach?</h1><pre id="o"></pre>
+<script>
+var o=document.getElementById('o');
+function log(k,v,good){var s=document.createElement('div');s.className=good?'ok':'no';s.textContent=(k+':                       ').slice(0,24)+v;o.appendChild(s);}
+document.addEventListener('securitypolicyviolation',function(e){log('CSP blocked',e.violatedDirective+' -> '+e.blockedURI,true)});
+log('window.origin',String(window.origin)+'  (opaque, not 127.0.0.1:8878)',window.origin==='null');
+try{log('parent.document',typeof parent.document.title,false)}catch(e){log('parent.document','blocked ('+e.name+')',true)}
+try{log('document.cookie','['+document.cookie+']',false)}catch(e){log('document.cookie','blocked ('+e.name+')',true)}
+try{localStorage.setItem('a','1');log('localStorage','in-memory shim, value '+localStorage.getItem('a'),true)}catch(e){log('localStorage','blocked ('+e.name+')',true)}
+try{top.location.href='http://127.0.0.1:8877/';log('top navigation','attempted',false)}catch(e){log('top navigation','blocked ('+e.name+')',true)}
+fetch('http://127.0.0.1:8877/api/projects').then(function(r){log('fetch UI origin API','ALLOWED '+r.status,false)}).catch(function(e){log('fetch UI origin API','blocked ('+e.name+')',true)});
+fetch('https://example.com/').then(function(r){log('fetch internet','ALLOWED '+r.status,false)}).catch(function(e){log('fetch internet','blocked ('+e.name+')',true)});
+fetch('data.json').then(function(r){return r.json()}).then(function(j){log('fetch own file','ok '+JSON.stringify(j),true)}).catch(function(e){log('fetch own file','FAILED ('+e.name+')',false)});
+var im=new Image();im.onerror=function(){log('remote image','blocked',true)};im.onload=function(){log('remote image','LOADED',false)};im.src='https://example.com/x.png';
+</script></body></html>

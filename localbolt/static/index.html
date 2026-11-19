@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LocalBolt</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg class="bolt" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M13.5 2 5 13.5h6L10 22l9-12h-6.3z" fill="currentColor"/></svg>
+    <span>LocalBolt</span>
+  </div>
+  <label class="sr" for="project-select">Project</label>
+  <select id="project-select"></select>
+  <button id="btn-new" type="button">New project</button>
+  <button id="btn-rename" type="button">Rename</button>
+  <button id="btn-archive" type="button">Archive</button>
+  <span class="spacer"></span>
+  <span id="model-badge" class="badge" role="status">Model: checking</span>
+  <div class="seg" role="group" aria-label="Layout">
+    <button type="button" data-mode="code">Code</button>
+    <button type="button" data-mode="split" aria-pressed="true">Split</button>
+    <button type="button" data-mode="preview">Preview</button>
+  </div>
+  <a id="btn-zip" class="btn" href="#" download>Download zip</a>
+</header>
+<div id="banner" class="banner" role="alert" hidden></div>
+<main id="layout" data-mode="split">
+  <section class="chat" aria-label="Prompt and history">
+    <ol id="messages" aria-live="polite"></ol>
+    <form id="prompt-form" autocomplete="off">
+      <label class="sr" for="prompt">Describe the app or the change</label>
+      <textarea id="prompt" rows="4" placeholder="Describe an app, or the change you want. Example: a pomodoro timer with a task list."></textarea>
+      <div class="row">
+        <span id="hint" class="hint">Ctrl+Enter to send</span>
+        <label class="think" title="Let the model reason before it writes. Much slower: minutes instead of about a minute."><input id="think" type="checkbox"> Think first</label>
+        <button id="btn-stop" type="button" hidden>Stop</button>
+        <button id="btn-send" type="submit" class="primary">Build</button>
+      </div>
+    </form>
+  </section>
+  <section class="code" aria-label="Files and editor">
+    <aside class="tree">
+      <div class="pane-head"><span>Files</span><button id="btn-newfile" type="button" title="New file">+ File</button></div>
+      <ul id="tree"></ul>
+    </aside>
+    <div class="editor">
+      <div class="pane-head">
+        <span id="file-name" class="fname">No file</span>
+        <span id="dirty" class="dirty" hidden>unsaved</span>
+        <span class="spacer"></span>
+        <button id="btn-file-rename" type="button">Rename</button>
+        <button id="btn-file-delete" type="button">Delete</button>
+        <button id="btn-save" type="button" class="primary">Save</button>
+      </div>
+      <textarea id="editor" spellcheck="false" aria-label="File editor" disabled></textarea>
+      <div id="editor-status" class="status"></div>
+    </div>
+  </section>
+  <section class="preview" aria-label="Live preview">
+    <div class="pane-head">
+      <label class="sr" for="version-select">Version</label>
+      <select id="version-select"></select>
+      <button id="btn-restore" type="button" hidden>Restore this version</button>
+      <span class="spacer"></span>
+      <button id="btn-reload" type="button">Reload</button>
+      <a id="btn-open" class="btn" href="#" target="_blank" rel="noopener noreferrer">Open in tab</a>
+    </div>
+    <div class="frame-wrap">
+      <iframe id="frame" title="Live preview" sandbox="allow-scripts allow-forms allow-modals" referrerpolicy="no-referrer" src="about:blank"></iframe>
+      <div id="frame-empty" class="frame-empty">Nothing to preview yet.</div>
+    </div>
+  </section>
+</main>
+<dialog id="dlg">
+  <form id="dlg-form">
+    <h2 id="dlg-title"></h2>
+    <p id="dlg-text" class="dlg-text"></p>
+    <input id="dlg-input" type="text" autocomplete="off" maxlength="160">
+    <select id="dlg-select" hidden></select>
+    <div class="row">
+      <button id="dlg-cancel" type="button">Cancel</button>
+      <button id="dlg-ok" type="submit" class="primary">OK</button>
+    </div>
+  </form>
+</dialog>
+<script src="/static/app.js"></script>
+</body>
+</html>

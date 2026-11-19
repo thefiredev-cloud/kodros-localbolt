@@ -1,0 +1,13 @@
+# Staged, not installed. To use: adjust ExecStart to your checkout, copy to ~/.config/systemd/user/ and start it by hand.
+[Unit]
+Description=LocalBolt prompt-to-app builder (127.0.0.1:8877, preview 8878)
+
+[Service]
+ExecStart=%h/kodros-localbolt/bin/localbolt serve
+Restart=on-failure
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=default.target
