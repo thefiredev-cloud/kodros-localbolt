@@ -11,7 +11,7 @@
 python3 -W error::ResourceWarning -m unittest discover -s tests -t .
 ```
 
-79 tests. They cover path rules, versioning, restore, conflicts, atomic commits, concurrency, zip contents, the block parser at every chunk size, the HTTP API, Host and Origin rejection on both servers, preview isolation headers and traversal attempts, generation against a fake streaming model, truncated streams and the model-down state. No real model runs.
+80 tests. They cover path rules, versioning, restore, conflicts, atomic commits, concurrency, zip contents, the block parser at every chunk size, the HTTP API, Host and Origin rejection on both servers, preview isolation headers and traversal attempts, generation against a fake streaming model, truncated streams and the model-down state. No real model runs.
 
 `tests/browser/` holds a manual probe (`isolation-probe.html`, `data.json`) that shows the preview sandbox in a real browser: `window.origin` is `null`, parent document, cookies and top navigation are blocked, `localStorage` is an in-memory shim, fetches to the UI origin and the internet are blocked by CSP.
 
@@ -63,7 +63,7 @@ Behind a gateway or reverse proxy, set `LOCALBOLT_GATEWAY_PREVIEW_PORT=<port whe
 
 ```text
 localbolt/       server, store, llm client and parser, cli, static/ UI
-tests/           79 tests, tests/browser manual sandbox probe
+tests/           80 tests, tests/browser manual sandbox probe
 contrib/         systemd user unit
 bin/localbolt    launcher
 docs/architecture.svg

@@ -287,6 +287,21 @@ class PreviewIsolationTests(Base):
         self.assertEqual(self.get(f"/{self.pid}/head/app.js")[2], b"1;")
         self.assertNotIn(b"localStorage", self.store.read_bytes(self.pid, "index.html"))
 
+    def test_storage_shim_keeps_the_doctype_first(self):
+        # A page without <head> used to get the shim before <!doctype html>, which puts
+        # browsers in quirks mode. The doctype must stay the first thing in the document.
+        pid = self.make_project({
+            "bare.html": "<!doctype html>\n<html><body><script src=\"app.js\"></script></body></html>",
+            "loose.html": "<h1>no doctype, no html, no head</h1>",
+        }, name="Bare")
+        body = self.get(f"/{pid}/head/bare.html")[2]
+        self.assertTrue(body.startswith(b"<!doctype html>"), body[:60])
+        self.assertIn(b"localStorage", body)
+        self.assertLess(body.index(b"localStorage"), body.index(b'<script src="app.js">'))
+        loose = self.get(f"/{pid}/head/loose.html")[2]
+        self.assertTrue(loose.startswith(b"<script>"), loose[:40])
+        self.assertTrue(loose.endswith(b"<h1>no doctype, no html, no head</h1>"))
+
     def test_head_request(self):
         s, h, body = self.r.preview("HEAD", f"/{self.pid}/head/app.js")
         self.assertEqual((s, body), (200, b""))
