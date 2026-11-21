@@ -51,6 +51,23 @@ STORAGE_SHIM = (
     "{value:m(),configurable:true})}catch(_){}})}})();</script>"
 )
 _HEAD_RE = re.compile(rb"<head[^>]*>", re.I)
+_HTML_RE = re.compile(rb"<html[^>]*>", re.I)
+_DOCTYPE_RE = re.compile(rb"\A\s*<!doctype[^>]*>", re.I)
+
+
+def inject_storage_shim(data: bytes) -> bytes:
+    """Insert STORAGE_SHIM so it runs before app code without breaking the document.
+
+    A script placed before <!doctype html> makes browsers ignore the doctype and render the
+    page in quirks mode, so the shim goes after <head>, else after <html>, else after the
+    doctype, and only a document with none of those gets it at the front.
+    """
+    shim = STORAGE_SHIM.encode()
+    for rx in (_HEAD_RE, _HTML_RE, _DOCTYPE_RE):
+        m = rx.search(data)
+        if m:
+            return data[: m.end()] + shim + data[m.end():]
+    return shim + data
 
 
 @dataclass
@@ -164,9 +181,7 @@ def make_preview_handler(store: st.Store, hosts: frozenset[str], app_origins: li
             ext = path[path.rfind("."):].lower()
             ctype = PREVIEW_TYPES.get(ext, "application/octet-stream")
             if ext in (".html", ".htm"):
-                m = _HEAD_RE.search(data)
-                shim = STORAGE_SHIM.encode()
-                data = data[: m.end()] + shim + data[m.end():] if m else shim + data
+                data = inject_storage_shim(data)
             self._send(200, data, ctype, {
                 "Content-Security-Policy": csp,
                 # The sandboxed iframe has an opaque origin, so it sends Origin: null.

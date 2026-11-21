@@ -32,7 +32,7 @@ Python 3 standard library, plain HTML, CSS and JS for the UI. Data lives in `~/.
 ```bash
 git clone https://github.com/thefiredev-cloud/kodros-localbolt.git
 cd kodros-localbolt
-python3 -W error::ResourceWarning -m unittest discover -s tests -t .    # 79 tests, no model needed
+python3 -W error::ResourceWarning -m unittest discover -s tests -t .    # 80 tests, no model needed
 export LOCALBOLT_LLM_URL=http://127.0.0.1:8080/v1
 export LOCALBOLT_LLM_MODEL=<an id listed by GET /models on your server>
 bin/localbolt serve                  # UI 8877, preview 8878
