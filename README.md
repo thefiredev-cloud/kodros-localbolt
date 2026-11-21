@@ -2,7 +2,7 @@
 
 A prompt-to-web-app builder that runs on your own machine. Describe a small web app, watch the files appear, edit them, restore any earlier version and download a zip. The model is one you serve yourself, so prompts and generated code never leave the network.
 
-## Hardware and on-prem
+## Compute and on-prem
 
 - Linux and Python 3. The app is standard library only: no npm, no CDN, no pip packages. It needs no GPU itself.
 - The VRAM comes from the model server you point it at. Any OpenAI-compatible endpoint works (llama.cpp server, vLLM, Ollama and similar). A Llama, Gemma, gpt-oss or Granite model fits the same way. The author's runs used a DeepSeek model (non-US origin) at about 60 seconds for a small polished app with thinking off. How much memory your model needs depends on the model and quantization you choose.
